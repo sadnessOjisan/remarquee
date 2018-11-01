@@ -3,16 +3,24 @@ import * as ReactDOM from "react-dom";
 import styled from 'styled-components'
 import './util/reset.css'
 
-class App extends React.Component{
+interface Props {
+    className?: string;
+    children?: string;
+}
+
+class Marquee extends React.Component<Props>{
     render(){
-        return <Wrapper>aaa</Wrapper>
+        const {children, className} = this.props;
+        return <Wrapper className={className}>{children}</Wrapper>
     }
 }
 
 const Wrapper = styled.div`
 `
 
+export default Marquee;
+
 ReactDOM.render(
-    <App></App>,
+    <Marquee>test</Marquee>,
     document.getElementById('root')
 );
