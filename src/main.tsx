@@ -6,6 +6,15 @@ import './util/reset.css'
 interface Props {
     className?: string;
     children?: string;
+    behavior?: string;
+    direction?: string;
+    height?: number;
+    hspace?: number;
+    loop?: number;
+    scrollamount?: number;
+    scrolldelay?: number;
+    vspace?: number;
+    width?: number;
 }
 
 class Marquee extends React.Component<Props>{
@@ -16,6 +25,7 @@ class Marquee extends React.Component<Props>{
 }
 
 const Wrapper = styled.div`
+  
 `
 
 export default Marquee;
