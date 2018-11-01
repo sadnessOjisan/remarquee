@@ -1,12 +1,11 @@
 import * as React from 'react'; 
 import * as ReactDOM from "react-dom";
 import styled from 'styled-components'
-import * as iphone from './assets/frame.png'
-import './vendor/reset.css'
+import './util/reset.css'
 
 class App extends React.Component{
     render(){
-        return <Wrapper><PhoneWrapper><Phone src={iphone}></Phone><UIView></UIView></PhoneWrapper></Wrapper>
+        return <Wrapper>aaa</Wrapper>
     }
 }
 
