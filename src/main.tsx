@@ -10,31 +10,6 @@ class App extends React.Component{
 }
 
 const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  overflow-y: scroll;
-`
-
-const PhoneWrapper = styled.div`
-height: 736px;
-  width: 414px;
-  position: relative;
-`
-
-const Phone = styled.img`
-  height: 736px;
-  width: 414px;
-`
-
-const UIView = styled.div`
-  width: 320px;
-  height: 520px;
-  position: absolute;
-  top: 110px;
-  left: 47px;
-  background-color: white;
 `
 
 ReactDOM.render(
