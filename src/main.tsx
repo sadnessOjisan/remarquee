@@ -41,7 +41,7 @@ class App extends React.Component<Props, State> {
     const { children, className, width, height, direction } = this.props;
     console.log('direction: ', direction)
     return (
-      <Wrapper width={width} height={height} className={className} direction={direction}>
+      <Wrapper {...this.props}>
         <p>{children}</p>
       </Wrapper>
     );
