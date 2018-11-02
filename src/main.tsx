@@ -1,22 +1,22 @@
 import * as React from 'react'; 
 import * as ReactDOM from "react-dom";
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import './util/reset.css'
 
 interface Props {
-  width: number
-  behavior: string
-  bgcolor: string
-  direction: number
-  height: number
-  hspace: number
-  loop: number
-  scrollamount: number
-  scrolldelay: number
-  truespeed: number
-  vspace: number
-  children: string
-  className: string
+  width?: number
+  behavior?: string
+  bgcolor?: string
+  direction?: number
+  height?: number
+  hspace?: number
+  loop?: number
+  scrollamount?: number
+  scrolldelay?: number
+  truespeed?: number
+  vspace?: number
+  children?: string
+  className?: string
 }
 
 interface State {
@@ -31,17 +31,29 @@ class App extends React.Component<Props, State>{
     }
   }
     render(){
-      const {children, className} = this.props;
-        return <Wrapper className={className}>{children}</Wrapper>
+      const {children, className, width} = this.props;
+        return <Wrapper width={width} className={className}><p>{children}</p></Wrapper>
     }
 }
 
+const Move = keyframes`
+  0% { left: 100%; transform: translate(0); }
+  100% { left: 0; transform: translate(-100%); }
+`;
+
 const Wrapper = styled.div`
-  width: 100%;
-  height: 100%;
+  width: ${props => props.width? props.width:'100%'};
+  > * {
+    position: absolute;
+    animation: ${Move} 10s infinite linear;
+    white-space: nowrap;
+    display:inline-block;
+  }
 `
 
+
+
 ReactDOM.render(
-    <App></App>,
+    <App>aaaaaaaaaaaa</App>,
     document.getElementById('root')
 );
