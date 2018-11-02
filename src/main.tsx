@@ -8,7 +8,7 @@ interface Props {
   behavior?: string;
   bgcolor?: string;
   direction?: string;
-  height?: number;
+  height?: string;
   hspace?: number;
   loop?: number;
   scrollamount?: number;
@@ -38,8 +38,7 @@ class App extends React.Component<Props, State> {
     };
   }
   render() {
-    const { children, className, width, height, direction } = this.props;
-    console.log('direction: ', direction)
+    const { children } = this.props;
     return (
       <Wrapper {...this.props}>
         <p>{children}</p>
@@ -58,7 +57,18 @@ const Right = keyframes`
   100% { left: 100%; transform: translate(0); }
 `;
 
+const Up = keyframes`
+  0% { bottom: 100%; transform: translate(0,100%); }
+  100% { bottom: 0px; transform: translate(0,0); }
+`;
+
+const Down = keyframes`
+  0% { bottom: 0px; transform: translate(0,0); }
+  100% { bottom: 100%; transform: translate(0,100%); }
+`;
+
 const Wrapper = styled.div`
+  position: relative;
   width: ${props => (props.width ? props.width : "100%")};
   height: ${props => props.height && props.height};
   > * {
@@ -70,17 +80,17 @@ const Wrapper = styled.div`
           case Direction.right:
             return Right;
           case Direction.up:
-            return Left;
+            return Up;
           case Direction.down:
-            return Left;
+            return Down;
           default:
             return Left;
         }
       }}
-      10s infinite linear;
+      1s infinite linear;
     white-space: nowrap;
     display: inline-block;
   }
 `;
 
-ReactDOM.render(<App direction='right'>aaaaaaaaaaaa</App>, document.getElementById("root"));
+ReactDOM.render(<App direction='up'>aaaaaaaaaaaa</App>, document.getElementById("root"));
