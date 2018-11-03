@@ -65,10 +65,15 @@ class Remarquee extends React.Component<Props, State> {
     const { loopNum } = this.state;
     console.log('loopNum: ', loopNum);
     const isLoop = loopNum === -1;
-    const { children } = this.props;
+    const { children, direction } = this.props;
     return (
       <Wrapper {...this.props}>
-        <Text ref={this.text} isLoop={isLoop} loopNum={loopNum} {...this.props}>
+        <Text
+          ref={this.text}
+          isLoop={isLoop}
+          loopNum={loopNum}
+          direction={direction}
+        >
           {children}
         </Text>
       </Wrapper>
@@ -87,8 +92,8 @@ const Right = keyframes`
 `;
 
 const Up = keyframes`
-  0% { bottom: 100%; transform: translate(0,100%); }
-  100% { bottom: 0px; transform: translate(0,0); }
+  0% { top: 100%; transform: translate(0,0); }
+  100% { top: 0; transform: translate(0,0); }
 `;
 
 const Down = keyframes`
@@ -98,8 +103,10 @@ const Down = keyframes`
 
 const Wrapper = styled.div`
   position: relative;
+  background-color: ${props => props.bgcolor}
   width: ${props => (props.width ? props.width : '100%')};
   height: ${props => props.height && props.height};
+  overflow: hidden;
 `;
 
 const Text = styled.p`
