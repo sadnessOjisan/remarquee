@@ -30,7 +30,7 @@ const Direction = {
   down: "down"
 };
 
-class App extends React.Component<Props, State> {
+class Remarquee extends React.Component<Props, State> {
     private text = React.createRef<HTMLParagraphElement>()
   constructor(props: Props) {
     super(props);
@@ -116,5 +116,7 @@ animation: ${props => {
   display: inline-block;
 `
 
-ReactDOM.render(<App direction='left'>aaaaaaaaaaaa</App>, document.getElementById("root"));
+ReactDOM.render(<Remarquee direction='left'>aaaaaaaaaaaa</Remarquee>, document.getElementById("root"));
+
+export default Remarquee;
 
