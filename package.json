@@ -1,6 +1,6 @@
 {
   "name": "remarquee",
-  "version": "0.0.8",
+  "version": "1.0.0",
   "main": "dist/build.js",
   "repository": "https://github.com/sadnessOjisan/markey.git",
   "author": "sadness_ojisan <sadness.ojisan@gmail.com>",
