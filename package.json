@@ -57,7 +57,7 @@
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "*.js": [
+    "*.tsx": [
       "tslint --fix",
       "tslint",
       "git add"
