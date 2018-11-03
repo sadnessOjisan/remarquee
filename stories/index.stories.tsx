@@ -10,6 +10,7 @@ storiesOf('Button', module)
       aaaaaaaa
     </Marquee>
   ))
+  .add('hspace', () => <Marquee hspace={55}>hspacehspacehspacehspace</Marquee>)
   .add('ireko', () => (
     <Marquee direction="up" height="400px">
       <Marquee direction="left" width="800px">

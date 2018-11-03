@@ -20,7 +20,14 @@ interface Props {
 
 interface State {
   loopNum: number;
+  elementHeight: number | null;
+  elementWidth: number | null;
 }
+
+interface Window {
+  hspace: number;
+}
+declare var window: Window;
 
 const Direction = {
   left: 'left',
@@ -34,7 +41,9 @@ class Remarquee extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      loopNum: -1
+      loopNum: -1,
+      elementHeight: null,
+      elementWidth: null
     };
   }
 
@@ -51,11 +60,15 @@ class Remarquee extends React.Component<Props, State> {
     this.text.current.addEventListener('oAnimationEnd', () => {
       this.decrementLoopCount();
     });
+    window.hspace = this.props.hspace + this.text.current.clientWidth;
+    this.setState({
+      elementHeight: this.text.current.clientHeight,
+      elementWidth: this.text.current.clientWidth
+    });
   }
 
   decrementLoopCount() {
     const { loopNum } = this.state;
-    console.log('<decrementLoopCount> loopNum: ', loopNum);
     if (loopNum > 0) {
       this.setState({ loopNum: this.state.loopNum - 1 });
     }
@@ -63,9 +76,8 @@ class Remarquee extends React.Component<Props, State> {
 
   render() {
     const { loopNum } = this.state;
-    console.log('loopNum: ', loopNum);
     const isLoop = loopNum === -1;
-    const { children, direction } = this.props;
+    const { children, direction, hspace } = this.props;
     return (
       <Wrapper {...this.props}>
         <Text
@@ -82,8 +94,8 @@ class Remarquee extends React.Component<Props, State> {
 }
 
 const Left = keyframes`
-  0% { left: 100%; transform: translate(0); }
-  100% { left: 0; transform: translate(-100%); }
+  0% { left: calc(100% - ${window.hspace}px); transform: translate(0); }
+  100% { left: ${window.hspace}px; transform: translate(-100%); }
 `;
 
 const Right = keyframes`
@@ -103,9 +115,11 @@ const Down = keyframes`
 
 const Wrapper = styled.div`
   position: relative;
-  background-color: ${props => props.bgcolor}
+  background-color: ${props => props.bgcolor};
   width: ${props => (props.width ? props.width : '100%')};
-  height: ${props => props.height && props.height};
+  height: ${props => (props.height ? props.height : '16px')};
+  padding-right: ${props => props.hspace}px;
+  padding-left: ${props => props.hspace}px;
   overflow: hidden;
 `;
 
