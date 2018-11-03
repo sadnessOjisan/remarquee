@@ -14,7 +14,7 @@ interface Props {
   scrolldelay?: number;
   truespeed?: number;
   vspace?: number;
-  children?: React.ReactNode;
+  children?: string | React.ReactNode;
   className?: string;
 }
 
@@ -99,8 +99,8 @@ const Left = keyframes`
 `;
 
 const Right = keyframes`
-  0% { left: 0; transform: translate(-100%); }
-  100% { left: 100%; transform: translate(0); }
+  0% { left: ${window.hspace}px; transform: translate(-100%); }
+  100% { left: calc(100% - ${window.hspace}px); transform: translate(0); }
 `;
 
 const Up = keyframes`
