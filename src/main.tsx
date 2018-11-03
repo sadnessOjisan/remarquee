@@ -54,7 +54,6 @@ class Remarquee extends React.Component<Props, State> {
     }
   }
 
-
   render() {
       const {loopNum} = this.state
       console.log('loopNum: ', loopNum)
