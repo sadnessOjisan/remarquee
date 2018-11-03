@@ -20,7 +20,7 @@ interface Props {
 }
 
 interface State {
-  loomNum: number;
+  loopNum: number;
 }
 
 const Direction = {
@@ -31,17 +31,38 @@ const Direction = {
 };
 
 class App extends React.Component<Props, State> {
+    private text = React.createRef<HTMLParagraphElement>()
   constructor(props: Props) {
     super(props);
     this.state = {
-      loomNum: 0
+      loopNum: 2
     };
   }
+
+  componentDidMount(){
+    this.text.current.addEventListener("webkitAnimationEnd", ()=>{this.decrementLoopCount()});
+    this.text.current.addEventListener("AnimationEnd", ()=>{this.decrementLoopCount()});
+    this.text.current.addEventListener("animationend", ()=>{this.decrementLoopCount()});
+    this.text.current.addEventListener("oAnimationEnd", ()=>{this.decrementLoopCount()});
+  }
+
+  decrementLoopCount(){
+    const {loopNum} = this.state
+    console.log('<decrementLoopCount> loopNum: ', loopNum)
+    if(loopNum > 0){
+        this.setState({loopNum: this.state.loopNum-1})
+    }
+  }
+
+
   render() {
+      const {loopNum} = this.state
+      console.log('loopNum: ', loopNum)
+      const isLoop = loopNum === -1;
     const { children } = this.props;
     return (
       <Wrapper {...this.props}>
-        <p>{children}</p>
+        <Text ref={this.text} isLoop={isLoop} loopNum={loopNum} {...this.props}>{children}</Text>
       </Wrapper>
     );
   }
@@ -71,26 +92,29 @@ const Wrapper = styled.div`
   position: relative;
   width: ${props => (props.width ? props.width : "100%")};
   height: ${props => props.height && props.height};
-  > * {
-    position: absolute;
-    animation: ${props => {
-        switch (props.direction) {
-          case Direction.left:
-            return Left;
-          case Direction.right:
-            return Right;
-          case Direction.up:
-            return Up;
-          case Direction.down:
-            return Down;
-          default:
-            return Left;
-        }
-      }}
-      1s infinite linear;
-    white-space: nowrap;
-    display: inline-block;
-  }
 `;
 
-ReactDOM.render(<App direction='up'>aaaaaaaaaaaa</App>, document.getElementById("root"));
+const Text = styled.p`
+position: absolute;
+animation: ${props => {
+    switch (props.direction) {
+      case Direction.left:
+        return Left;
+      case Direction.right:
+        return Right;
+      case Direction.up:
+        return Up;
+      case Direction.down:
+        return Down;
+      default:
+        return Left;
+    }
+  }}
+  1s linear;
+  animation-iteration-count: ${props=>props.loopNum && props.loopNum};
+white-space: nowrap;
+display: inline-block;
+`
+
+ReactDOM.render(<App direction='left'>aaaaaaaaaaaa</App>, document.getElementById("root"));
+
