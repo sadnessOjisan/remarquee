@@ -18,6 +18,16 @@ storiesOf('Button', module)
       hspacehspacehspacehspace
     </Marquee>
   ))
+  .add('vspace up', () => (
+    <Marquee vspace={55} direction="up" height="300px">
+      vspacevspacevspacevspace
+    </Marquee>
+  ))
+  .add('vspace down', () => (
+    <Marquee vspace={55} direction="down">
+      vspacevspacevspacevspace
+    </Marquee>
+  ))
   .add('ireko', () => (
     <Marquee direction="up" height="400px">
       <Marquee direction="left" width="800px">

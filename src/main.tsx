@@ -26,6 +26,7 @@ interface State {
 
 interface Window {
   hspace: number;
+  vspace: number;
 }
 declare var window: Window;
 
@@ -61,6 +62,7 @@ class Remarquee extends React.Component<Props, State> {
       this.decrementLoopCount();
     });
     window.hspace = this.props.hspace + this.text.current.clientWidth;
+    window.vspace = this.props.vspace + this.text.current.clientHeight;
     this.setState({
       elementHeight: this.text.current.clientHeight,
       elementWidth: this.text.current.clientWidth
@@ -77,7 +79,7 @@ class Remarquee extends React.Component<Props, State> {
   render() {
     const { loopNum } = this.state;
     const isLoop = loopNum === -1;
-    const { children, direction, hspace } = this.props;
+    const { children, direction, hspace, vspace } = this.props;
     return (
       <Wrapper {...this.props}>
         <Text
@@ -104,13 +106,15 @@ const Right = keyframes`
 `;
 
 const Up = keyframes`
-  0% { top: 100%; transform: translate(0,0); }
-  100% { top: 0; transform: translate(0,0); }
+  0% { top: calc(100% - ${window.vspace}px); transform: translate(0,0); }
+  100% { top: ${window.vspace}px; transform: translate(0,0); }
 `;
 
 const Down = keyframes`
-  0% { bottom: 0px; transform: translate(0,0); }
-  100% { bottom: 100%; transform: translate(0,100%); }
+  0% { bottom: ${window.vspace}px; transform: translate(0,0); }
+  100% { bottom: calc(100% - ${
+    window.vspace
+  }px); transform: translate(0,100%); }
 `;
 
 const Wrapper = styled.div`
@@ -120,6 +124,8 @@ const Wrapper = styled.div`
   height: ${props => (props.height ? props.height : '16px')};
   padding-right: ${props => props.hspace}px;
   padding-left: ${props => props.hspace}px;
+  padding-top: ${props => props.vspace}px;
+  padding-bottom: ${props => props.vspace}px;
   overflow: hidden;
 `;
 
