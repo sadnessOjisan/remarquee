@@ -35,7 +35,7 @@ class App extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      loopNum: 2
+      loopNum: -1
     };
   }
 
@@ -111,9 +111,9 @@ animation: ${props => {
     }
   }}
   1s linear;
-  animation-iteration-count: ${props=>props.loopNum && props.loopNum};
-white-space: nowrap;
-display: inline-block;
+  animation-iteration-count: ${props=>props.isLoop? 'infinite' : props.loopNum};
+  white-space: nowrap;
+  display: inline-block;
 `
 
 ReactDOM.render(<App direction='left'>aaaaaaaaaaaa</App>, document.getElementById("root"));
