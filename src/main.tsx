@@ -4,7 +4,7 @@ import styled, { keyframes } from 'styled-components'
 import './util/reset.css'
 
 interface Props {
-    width?: number
+    width?: string
     behavior?: string
     bgcolor?: string
     direction?: string
@@ -15,7 +15,7 @@ interface Props {
     scrolldelay?: number
     truespeed?: number
     vspace?: number
-    children?: string
+    children?: React.ReactNode
     className?: string
 }
 
