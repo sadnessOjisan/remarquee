@@ -22,3 +22,7 @@ chrome-user-data
 .vscode
 *.swp
 *.swo
+.cache
+!.gitkeep
+dist/
+!.gitkeep
