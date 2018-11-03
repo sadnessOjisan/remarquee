@@ -1,6 +1,6 @@
 {
   "name": "remarquee",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "src/main.js",
   "repository": "https://github.com/sadnessOjisan/markey.git",
   "author": "sadness_ojisan <sadness.ojisan@gmail.com>",
@@ -47,6 +47,11 @@
     "webpack": "^4.23.1",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.10"
+  },
+  "peerDependencies": {
+    "react": "^16.6.0",
+    "react-dom": "^16.6.0",
+    "styled-components": "^4.0.3"
   },
   "scripts": {
     "start:local": "NODE_ENV='development' REACT_APP_ENV='local' webpack-dev-server",
