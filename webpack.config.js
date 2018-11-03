@@ -4,7 +4,7 @@ const env = process.env.NODE_ENV;
 
 module.exports = {
     mode: env || 'development',
-    entry: './dist/build.js',
+    entry: './src/main.tsx',
     output: {
         path: path.resolve(__dirname, './dist'),
         filename: 'build.js',
