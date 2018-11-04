@@ -103,6 +103,7 @@ class Remarquee extends React.Component<Props, State> {
       }
     }
     console.log('<componentDidMount> animationSec: ', animationSec);
+    console.log('<componentDidMount> direction: ', direction);
     this.setState({
       elementHeight: this.text.current.clientHeight,
       elementWidth: this.text.current.clientWidth,
@@ -194,7 +195,7 @@ const Left = props => keyframes`
   0% { left: ${
     props.behavior === 'slide' || props.behavior === 'alternate'
       ? `calc(100% - ${props.elementWidth}px)`
-      : `${props.hspace}px`
+      : `calc(100% - ${props.hspace}px)`
   }; transform: translate(0); }
   100% { left: ${
     props.behavior === 'slide' || props.behavior === 'alternate'
@@ -224,9 +225,9 @@ const Up = props => keyframes`
   }; transform: translate(0,0); }
   100% { top: ${
     props.behavior === 'slide' || props.behavior === 'alternate'
-      ? 0 + props.elementHeight
-      : `calc(100% - ${props.vspace}`
-  }px; transform: translate(0,-100%); }
+      ? `${0 + props.elementHeight}px`
+      : `0px`
+  }; transform: translate(0,-100%); }
 `;
 
 const Down = props => keyframes`
