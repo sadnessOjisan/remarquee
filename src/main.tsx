@@ -12,7 +12,7 @@ interface Props {
   loop?: number;
   scrollamount?: number;
   scrolldelay?: number;
-  truespeed?: number;
+  truespeed?: string;
   vspace?: number;
   children?: string | React.ReactNode;
   className?: string;
@@ -47,6 +47,7 @@ class Remarquee extends React.Component<Props, State> {
   }
 
   componentDidMount() {
+    const { direction, scrollamount, scrolldelay, truespeed } = this.props;
     this.text.current.addEventListener('webkitAnimationEnd', () => {
       this.decrementLoopCount();
     });
@@ -61,19 +62,32 @@ class Remarquee extends React.Component<Props, State> {
     });
     const wrapperWidth = this.wrapper.current.clientWidth;
     const wrapperHeight = this.wrapper.current.clientHeight;
-    const { direction, scrollamount, scrolldelay } = this.props;
     let animationSec: number;
     if (direction === Direction.up || direction === Direction.down) {
-      animationSec = wrapperHeight / (scrollamount || 6);
+      if (truespeed === 'true') {
+        animationSec =
+          ((wrapperHeight / (scrollamount || 6)) * (scrolldelay || 85)) / 1000;
+      } else {
+        animationSec =
+          ((wrapperHeight / (scrollamount || 6)) *
+            (scrolldelay < 60 ? 60 : scrolldelay || 85)) /
+          1000;
+      }
     } else if (
       !direction ||
       direction === Direction.left ||
       direction === Direction.right
     ) {
-      animationSec =
-        ((wrapperWidth / (scrollamount || 6)) * (scrolldelay || 85)) / 1000;
+      if (truespeed === 'true') {
+        animationSec =
+          ((wrapperWidth / (scrollamount || 6)) * (scrolldelay || 85)) / 1000;
+      } else {
+        animationSec =
+          ((wrapperWidth / (scrollamount || 6)) *
+            (scrolldelay < 60 ? 60 : scrolldelay || 85)) /
+          1000;
+      }
     }
-
     this.setState({
       elementHeight: this.text.current.clientHeight,
       elementWidth: this.text.current.clientWidth,
@@ -91,9 +105,9 @@ class Remarquee extends React.Component<Props, State> {
   render() {
     const { loopNum, animationSec, elementHeight, elementWidth } = this.state;
     const isLoop = loopNum === -1;
-    const { children, direction, hspace, vspace } = this.props;
+    const { children, direction, hspace, vspace, className } = this.props;
     return (
-      <Wrapper {...this.props} ref={this.wrapper}>
+      <Wrapper {...this.props} ref={this.wrapper} className={className}>
         <Text
           ref={this.text}
           isLoop={isLoop}

@@ -2,9 +2,13 @@ import * as React from 'react';
 import { storiesOf } from '@storybook/react';
 import Marquee from '../src/main.tsx';
 
-storiesOf('Button', module)
-  .add('normal marquee', () => <Marquee>aaaaaaaa</Marquee>)
-  .add('upside', () => <Marquee direction="up">aaaaaaaa</Marquee>)
+storiesOf('marquee', module)
+  .add('<Marquee>normal marquee</Marquee>', () => (
+    <Marquee>normal marquee</Marquee>
+  ))
+  .add('<Marquee direction="up">upside</Marquee>', () => (
+    <Marquee direction="up">upside</Marquee>
+  ))
   .add('red', () => (
     <Marquee direction="up" bgcolor="red" height="30px">
       aaaaaaaa
