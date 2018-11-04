@@ -192,17 +192,29 @@ class Remarquee extends React.Component<Props, State> {
 }
 
 const Left = props => keyframes`
-  0% { left: calc(100% - ${props.hspace}px); transform: translate(0); }
+  0% { left: ${
+    props.behavior === 'slide' || props.behavior === 'alternate'
+      ? `calc(100% - ${props.elementWidth}px)`
+      : `${props.hspace}px`
+  }; transform: translate(0); }
   100% { left: ${
-    props.behavior === 'slide'
+    props.behavior === 'slide' || props.behavior === 'alternate'
       ? props.elementWidth
       : -(props.elementWidth - props.hspace)
   }px; transform: translate(-100%); }
 `;
 
 const Right = props => keyframes`
-  0% { left: ${props.hspace}px; transform: translate(-100%); }
-  100% { left: calc(100% - ${props.hspace}px); transform: translate(0); }
+  0% { left: ${
+    props.behavior === 'slide' || props.behavior === 'alternate'
+      ? props.elementWidth
+      : `${props.hspace}`
+  }px; transform: translate(-100%); }
+  100% { left: ${
+    props.behavior === 'slide' || props.behavior === 'alternate'
+      ? `calc(100% - ${props.elementWidth}`
+      : `calc(100% - ${props.hspace}`
+  }px); transform: translate(0); }
 `;
 
 const Up = props => keyframes`

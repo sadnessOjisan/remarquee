@@ -21,7 +21,7 @@ storiesOf('marquee', module)
   .add(
     '<Marquee behavior=alternate>alternatealternatealternatealternate</Marquee>',
     () => (
-      <Marquee behavior="alternate" scrollamount={100}>
+      <Marquee behavior="alternate" scrollamount={50}>
         alternatealternatealternatealternate
       </Marquee>
     )
