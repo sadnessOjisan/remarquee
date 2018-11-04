@@ -26,6 +26,19 @@ storiesOf('marquee', module)
       </Marquee>
     )
   )
+  .add(
+    '<Marquee behavior="alternate" scrollamount={50} direction=up>up alternate</Marquee>',
+    () => (
+      <Marquee
+        behavior="alternate"
+        scrollamount={20}
+        direction="up"
+        height="300px"
+      >
+        alternatealternatealternatealternate
+      </Marquee>
+    )
+  )
   .add('<Marquee bgcolor="red">red</Marquee>', () => (
     <Marquee bgcolor="red">red</Marquee>
   ))

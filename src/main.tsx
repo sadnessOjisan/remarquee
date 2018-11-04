@@ -102,6 +102,7 @@ class Remarquee extends React.Component<Props, State> {
           1000;
       }
     }
+    console.log('<componentDidMount> animationSec: ', animationSec);
     this.setState({
       elementHeight: this.text.current.clientHeight,
       elementWidth: this.text.current.clientWidth,
@@ -154,10 +155,8 @@ class Remarquee extends React.Component<Props, State> {
     console.log('<render>currentMode: ', currentMode);
     const { children, hspace, vspace, className, behavior } = this.props;
     console.log('<render>behavior: ', behavior);
-
     const isLoop =
       !(behavior === 'slide' || behavior === 'alternate') && loopNum === -1;
-    console.log('<render>isLoop: ', isLoop);
     return (
       <Wrapper {...this.props} ref={this.wrapper} className={className}>
         <LeftBlock
@@ -218,16 +217,26 @@ const Right = props => keyframes`
 `;
 
 const Up = props => keyframes`
-  0% { top: calc(100% - ${props.vspace}px); transform: translate(0,0); }
-  100% { top: ${props.vspace ||
-    0 - props.elementHeight}px; transform: translate(0,0); }
+  0% { top: ${
+    props.behavior === 'slide' || props.behavior === 'alternate'
+      ? `calc(100% + ${-props.elementHeight}px - ${props.vspace || 0}px)`
+      : `calc(100% - ${props.vspace}px)`
+  }; transform: translate(0,0); }
+  100% { top: ${
+    props.behavior === 'slide' || props.behavior === 'alternate'
+      ? 0 + props.elementHeight
+      : `calc(100% - ${props.vspace}`
+  }px; transform: translate(0,-100%); }
 `;
 
 const Down = props => keyframes`
-0% { top: ${props.vspace ||
-  0 - props.elementHeight}px; transform: translate(0,0); }
+0% { top: ${
+  props.behavior === 'slide' || props.behavior === 'alternate'
+    ? props.elementHeight
+    : 0 - props.elementHeight
+}px; transform: translate(0,-100%); }
 100% { top: calc(100% - ${props.vspace ||
-  0 + props.elementHeight}px); transform: translate(0,100%); }
+  0 + props.elementHeight}px); transform: translate(0,0); }
 `;
 
 const Wrapper = styled.div`
