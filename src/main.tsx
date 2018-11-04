@@ -119,7 +119,12 @@ class Remarquee extends React.Component<Props, State> {
     const { children, direction, hspace, vspace, className } = this.props;
     return (
       <Wrapper {...this.props} ref={this.wrapper} className={className}>
-        <LeftBlock hspace={hspace} elementWidth={elementWidth} />
+        <LeftBlock
+          vspace={vspace}
+          hspace={hspace}
+          elementWidth={elementWidth}
+          elementHeight={elementHeight}
+        />
         <Text
           ref={this.text}
           isLoop={isLoop}
@@ -133,7 +138,12 @@ class Remarquee extends React.Component<Props, State> {
         >
           {children}
         </Text>
-        <RightBlock hspace={hspace} elementWidth={elementWidth} />
+        <RightBlock
+          vspace={vspace}
+          hspace={hspace}
+          elementWidth={elementWidth}
+          elementHeight={elementHeight}
+        />
       </Wrapper>
     );
   }
@@ -172,23 +182,27 @@ const Wrapper = styled.div`
 `;
 
 const LeftBlock = styled.div`
-  width: ${props => props.hspace + props.elementWidth}px;
+  width: ${props =>
+    props.hspace ? `${props.hspace + props.elementWidth}px` : '100%'};
+  height: ${props =>
+    props.vspace ? `${props.vspace - props.elementHeight}px` : '100%'};
   background-color: white;
   position: absolute;
   left: ${props => props.hspace - props.elementWidth}px;
+  top: calc(${props => props.vspace}px);
   background-color: white;
-  height: ${props =>
-    props.vspace ? `${props.vspace - props.elementHeight}px` : '100%'};
   z-index: 3;
 `;
 
 const RightBlock = styled.div`
-  width: ${props => props.hspace + props.elementWidth}px;
-  background-color: white;
+  width: ${props =>
+    props.hspace ? `${props.hspace + props.elementWidth}px` : '100%'};
+  height: ${props =>
+    props.vspace ? `${props.vspace + props.elementHeight}px` : '100%'};
   position: absolute;
   left: calc(100% - ${props => props.hspace}px);
+  top: calc(100% - ${props => props.vspace}px);
   background-color: white;
-  height: 100%;
   z-index: 3;
 `;
 
