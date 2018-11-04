@@ -22,6 +22,7 @@ interface State {
   loopNum: number;
   elementHeight: number | null;
   elementWidth: number | null;
+  animationSec: number | null;
 }
 
 interface Window {
@@ -39,12 +40,15 @@ const Direction = {
 
 class Remarquee extends React.Component<Props, State> {
   private text = React.createRef<HTMLParagraphElement>();
+  private wrapper = React.createRef<HTMLParagraphElement>();
+
   constructor(props: Props) {
     super(props);
     this.state = {
       loopNum: -1,
       elementHeight: null,
-      elementWidth: null
+      elementWidth: null,
+      animationSec: null
     };
   }
 
@@ -61,11 +65,27 @@ class Remarquee extends React.Component<Props, State> {
     this.text.current.addEventListener('oAnimationEnd', () => {
       this.decrementLoopCount();
     });
-    window.hspace = this.props.hspace + this.text.current.clientWidth;
-    window.vspace = this.props.vspace + this.text.current.clientHeight;
+    window.hspace = (this.props.hspace || 0) + this.text.current.clientWidth;
+    window.vspace = (this.props.vspace || 0) + this.text.current.clientHeight;
+    const wrapperWidth = this.wrapper.current.clientWidth;
+    const wrapperHeight = this.wrapper.current.clientHeight;
+    const { direction, scrollamount, scrolldelay } = this.props;
+    let animationSec: number;
+    if (direction === Direction.up || direction === Direction.down) {
+      animationSec = wrapperHeight / (scrollamount || 6);
+    } else if (
+      !direction ||
+      direction === Direction.left ||
+      direction === Direction.right
+    ) {
+      animationSec =
+        ((wrapperWidth / (scrollamount || 6)) * (scrolldelay || 85)) / 1000;
+    }
+
     this.setState({
       elementHeight: this.text.current.clientHeight,
-      elementWidth: this.text.current.clientWidth
+      elementWidth: this.text.current.clientWidth,
+      animationSec: animationSec
     });
   }
 
@@ -77,16 +97,19 @@ class Remarquee extends React.Component<Props, State> {
   }
 
   render() {
-    const { loopNum } = this.state;
+    const { loopNum, animationSec, elementHeight, elementWidth } = this.state;
     const isLoop = loopNum === -1;
     const { children, direction, hspace, vspace } = this.props;
     return (
-      <Wrapper {...this.props}>
+      <Wrapper {...this.props} ref={this.wrapper}>
         <Text
           ref={this.text}
           isLoop={isLoop}
           loopNum={loopNum}
           direction={direction}
+          animationSec={animationSec}
+          hspace={hspace + elementWidth || 0}
+          vspace={vspace + elementHeight || 0}
         >
           {children}
         </Text>
@@ -94,6 +117,11 @@ class Remarquee extends React.Component<Props, State> {
     );
   }
 }
+
+const LeftGen = props => keyframes`
+0% { left: calc(100% - ${props.hspace}px); transform: translate(0); }
+100% { left: ${props.hspace}px; transform: translate(-100%); }
+`;
 
 const Left = keyframes`
   0% { left: calc(100% - ${window.hspace}px); transform: translate(0); }
@@ -134,7 +162,7 @@ const Text = styled.p`
   animation: ${props => {
       switch (props.direction) {
         case Direction.left:
-          return Left;
+          return LeftGen(props);
         case Direction.right:
           return Right;
         case Direction.up:
@@ -142,10 +170,10 @@ const Text = styled.p`
         case Direction.down:
           return Down;
         default:
-          return Left;
+          return LeftGen(props);
       }
     }}
-    1s linear;
+    ${props => props.animationSec}s linear;
   animation-iteration-count: ${props =>
     props.isLoop ? 'infinite' : props.loopNum};
   white-space: nowrap;
