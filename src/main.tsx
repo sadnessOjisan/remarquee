@@ -119,17 +119,21 @@ class Remarquee extends React.Component<Props, State> {
     const { children, direction, hspace, vspace, className } = this.props;
     return (
       <Wrapper {...this.props} ref={this.wrapper} className={className}>
+        <LeftBlock hspace={hspace} elementWidth={elementWidth} />
         <Text
           ref={this.text}
           isLoop={isLoop}
           loopNum={loopNum}
           direction={direction}
           animationSec={animationSec}
-          hspace={hspace + elementWidth || 0}
-          vspace={vspace + elementHeight || 0}
+          hspace={hspace || 0}
+          vspace={vspace || 0}
+          elementWidth={elementWidth}
+          elementHeight={elementHeight}
         >
           {children}
         </Text>
+        <RightBlock hspace={hspace} elementWidth={elementWidth} />
       </Wrapper>
     );
   }
@@ -137,7 +141,8 @@ class Remarquee extends React.Component<Props, State> {
 
 const Left = props => keyframes`
   0% { left: calc(100% - ${props.hspace}px); transform: translate(0); }
-  100% { left: ${props.hspace}px; transform: translate(-100%); }
+  100% { left: ${props.elementWidth -
+    props.hspace}px; transform: translate(-100%); }
 `;
 
 const Right = props => keyframes`
@@ -160,14 +165,35 @@ const Wrapper = styled.div`
   background-color: ${props => props.bgcolor};
   width: ${props => (props.width ? props.width : '100%')};
   height: ${props => (props.height ? props.height : '16px')};
-  padding-right: ${props => props.hspace}px;
-  padding-left: ${props => props.hspace}px;
-  padding-top: ${props => props.vspace}px;
-  padding-bottom: ${props => props.vspace}px;
   overflow: hidden;
+  display: flex;
+  flex-direction: ${props =>
+    (props.direction === 'up' || props.direction === 'down') && 'column'};
+`;
+
+const LeftBlock = styled.div`
+  width: ${props => props.hspace + props.elementWidth}px;
+  background-color: white;
+  position: absolute;
+  left: ${props => props.hspace - props.elementWidth}px;
+  background-color: white;
+  height: ${props =>
+    props.vspace ? `${props.vspace - props.elementHeight}px` : '100%'};
+  z-index: 3;
+`;
+
+const RightBlock = styled.div`
+  width: ${props => props.hspace + props.elementWidth}px;
+  background-color: white;
+  position: absolute;
+  left: calc(100% - ${props => props.hspace}px);
+  background-color: white;
+  height: 100%;
+  z-index: 3;
 `;
 
 const Text = styled.p`
+  z-index: 1;
   position: absolute;
   animation: ${props => {
       switch (props.direction) {
