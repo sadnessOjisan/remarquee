@@ -118,31 +118,24 @@ class Remarquee extends React.Component<Props, State> {
   }
 }
 
-const LeftGen = props => keyframes`
-0% { left: calc(100% - ${props.hspace}px); transform: translate(0); }
-100% { left: ${props.hspace}px; transform: translate(-100%); }
+const Left = props => keyframes`
+  0% { left: calc(100% - ${props.hspace}px); transform: translate(0); }
+  100% { left: ${props.hspace}px; transform: translate(-100%); }
 `;
 
-const Left = keyframes`
-  0% { left: calc(100% - ${window.hspace}px); transform: translate(0); }
-  100% { left: ${window.hspace}px; transform: translate(-100%); }
+const Right = props => keyframes`
+  0% { left: ${props.hspace}px; transform: translate(-100%); }
+  100% { left: calc(100% - ${props.hspace}px); transform: translate(0); }
 `;
 
-const Right = keyframes`
-  0% { left: ${window.hspace}px; transform: translate(-100%); }
-  100% { left: calc(100% - ${window.hspace}px); transform: translate(0); }
+const Up = props => keyframes`
+  0% { top: calc(100% - ${props.vspace}px); transform: translate(0,0); }
+  100% { top: ${props.vspace}px; transform: translate(0,0); }
 `;
 
-const Up = keyframes`
-  0% { top: calc(100% - ${window.vspace}px); transform: translate(0,0); }
-  100% { top: ${window.vspace}px; transform: translate(0,0); }
-`;
-
-const Down = keyframes`
-  0% { bottom: ${window.vspace}px; transform: translate(0,0); }
-  100% { bottom: calc(100% - ${
-    window.vspace
-  }px); transform: translate(0,100%); }
+const Down = props => keyframes`
+0% { bottom: ${props.vspace}px; transform: translate(0,0); }
+100% { bottom: calc(100% - ${props.vspace}px); transform: translate(0,100%); }
 `;
 
 const Wrapper = styled.div`
@@ -162,7 +155,7 @@ const Text = styled.p`
   animation: ${props => {
       switch (props.direction) {
         case Direction.left:
-          return LeftGen(props);
+          return Left(props);
         case Direction.right:
           return Right;
         case Direction.up:
@@ -170,7 +163,7 @@ const Text = styled.p`
         case Direction.down:
           return Down;
         default:
-          return LeftGen(props);
+          return Left(props);
       }
     }}
     ${props => props.animationSec}s linear;
