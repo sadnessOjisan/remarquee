@@ -25,12 +25,6 @@ interface State {
   animationSec: number | null;
 }
 
-interface Window {
-  hspace: number;
-  vspace: number;
-}
-declare var window: Window;
-
 const Direction = {
   left: 'left',
   right: 'right',
@@ -65,8 +59,6 @@ class Remarquee extends React.Component<Props, State> {
     this.text.current.addEventListener('oAnimationEnd', () => {
       this.decrementLoopCount();
     });
-    window.hspace = (this.props.hspace || 0) + this.text.current.clientWidth;
-    window.vspace = (this.props.vspace || 0) + this.text.current.clientHeight;
     const wrapperWidth = this.wrapper.current.clientWidth;
     const wrapperHeight = this.wrapper.current.clientHeight;
     const { direction, scrollamount, scrolldelay } = this.props;
