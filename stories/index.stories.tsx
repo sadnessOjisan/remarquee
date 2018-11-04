@@ -15,6 +15,9 @@ storiesOf('marquee', module)
   .add('<Marquee direction="down">down</Marquee>', () => (
     <Marquee direction="down">down</Marquee>
   ))
+  .add('<Marquee behavior=slide>slideslideslideslide</Marquee>', () => (
+    <Marquee behavior="slide">slideslideslideslide</Marquee>
+  ))
   .add('<Marquee bgcolor="red">red</Marquee>', () => (
     <Marquee bgcolor="red">red</Marquee>
   ))
@@ -26,6 +29,14 @@ storiesOf('marquee', module)
       height="100%" direction="up"
     </Marquee>
   ))
+  .add(
+    '<Marquee height="100%" direction="down">height="100%"</Marquee>',
+    () => (
+      <Marquee height="100%" direction="down">
+        height="100%" direction="down"
+      </Marquee>
+    )
+  )
   .add('<Marquee height="70px" direction="up">height="70px"</Marquee>', () => (
     <Marquee height="70px" direction="up">
       height="70px" direction="up"

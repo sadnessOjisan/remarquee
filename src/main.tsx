@@ -115,8 +115,15 @@ class Remarquee extends React.Component<Props, State> {
 
   render() {
     const { loopNum, animationSec, elementHeight, elementWidth } = this.state;
-    const isLoop = loopNum === -1;
-    const { children, direction, hspace, vspace, className } = this.props;
+    const {
+      children,
+      direction,
+      hspace,
+      vspace,
+      className,
+      behavior
+    } = this.props;
+    const isLoop = behavior !== 'slide' && loopNum === -1;
     return (
       <Wrapper {...this.props} ref={this.wrapper} className={className}>
         <LeftBlock
@@ -135,6 +142,7 @@ class Remarquee extends React.Component<Props, State> {
           vspace={vspace || 0}
           elementWidth={elementWidth}
           elementHeight={elementHeight}
+          behavior={behavior}
         >
           {children}
         </Text>
@@ -151,8 +159,11 @@ class Remarquee extends React.Component<Props, State> {
 
 const Left = props => keyframes`
   0% { left: calc(100% - ${props.hspace}px); transform: translate(0); }
-  100% { left: ${props.elementWidth -
-    props.hspace}px; transform: translate(-100%); }
+  100% { left: ${
+    props.behavior === 'slide'
+      ? props.elementWidth
+      : -(props.elementWidth - props.hspace)
+  }px; transform: translate(-100%); }
 `;
 
 const Right = props => keyframes`
@@ -162,12 +173,15 @@ const Right = props => keyframes`
 
 const Up = props => keyframes`
   0% { top: calc(100% - ${props.vspace}px); transform: translate(0,0); }
-  100% { top: ${props.vspace}px; transform: translate(0,0); }
+  100% { top: ${props.vspace ||
+    0 - props.elementHeight}px; transform: translate(0,0); }
 `;
 
 const Down = props => keyframes`
-0% { bottom: ${props.vspace}px; transform: translate(0,0); }
-100% { bottom: calc(100% - ${props.vspace}px); transform: translate(0,100%); }
+0% { top: ${props.vspace ||
+  0 - props.elementHeight}px; transform: translate(0,0); }
+100% { top: calc(100% - ${props.vspace ||
+  0 + props.elementHeight}px); transform: translate(0,100%); }
 `;
 
 const Wrapper = styled.div`
@@ -183,9 +197,9 @@ const Wrapper = styled.div`
 
 const LeftBlock = styled.div`
   width: ${props =>
-    props.hspace ? `${props.hspace + props.elementWidth}px` : '100%'};
+    props.hspace ? `${props.hspace + props.elementWidth}px` : '0px'};
   height: ${props =>
-    props.vspace ? `${props.vspace - props.elementHeight}px` : '100%'};
+    props.vspace ? `${props.vspace - props.elementHeight}px` : '0px'};
   background-color: white;
   position: absolute;
   left: ${props => props.hspace - props.elementWidth}px;
@@ -196,9 +210,9 @@ const LeftBlock = styled.div`
 
 const RightBlock = styled.div`
   width: ${props =>
-    props.hspace ? `${props.hspace + props.elementWidth}px` : '100%'};
+    props.hspace ? `${props.hspace + props.elementWidth}px` : '0px'};
   height: ${props =>
-    props.vspace ? `${props.vspace + props.elementHeight}px` : '100%'};
+    props.vspace ? `${props.vspace + props.elementHeight}px` : '0px'};
   position: absolute;
   left: calc(100% - ${props => props.hspace}px);
   top: calc(100% - ${props => props.vspace}px);
@@ -225,7 +239,7 @@ const Text = styled.p`
     }}
     ${props => props.animationSec}s linear;
   animation-iteration-count: ${props =>
-    props.isLoop ? 'infinite' : props.loopNum};
+    props.isLoop ? 'infinite' : props.behavior === 'slide' ? 1 : props.loopNum};
   white-space: nowrap;
   display: inline-block;
 `;
