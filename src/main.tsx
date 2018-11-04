@@ -47,7 +47,14 @@ class Remarquee extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    const { direction, scrollamount, scrolldelay, truespeed } = this.props;
+    const {
+      direction,
+      scrollamount,
+      scrolldelay,
+      truespeed,
+      hspace,
+      vspace
+    } = this.props;
     this.text.current.addEventListener('webkitAnimationEnd', () => {
       this.decrementLoopCount();
     });
@@ -66,10 +73,12 @@ class Remarquee extends React.Component<Props, State> {
     if (direction === Direction.up || direction === Direction.down) {
       if (truespeed === 'true') {
         animationSec =
-          ((wrapperHeight / (scrollamount || 6)) * (scrolldelay || 85)) / 1000;
+          (((wrapperHeight - (vspace || 0) * 2) / (scrollamount || 6)) *
+            (scrolldelay || 85)) /
+          1000;
       } else {
         animationSec =
-          ((wrapperHeight / (scrollamount || 6)) *
+          (((wrapperHeight - (vspace || 0) * 2) / (scrollamount || 6)) *
             (scrolldelay < 60 ? 60 : scrolldelay || 85)) /
           1000;
       }
@@ -80,10 +89,12 @@ class Remarquee extends React.Component<Props, State> {
     ) {
       if (truespeed === 'true') {
         animationSec =
-          ((wrapperWidth / (scrollamount || 6)) * (scrolldelay || 85)) / 1000;
+          (((wrapperWidth - (hspace || 0) * 2) / (scrollamount || 6)) *
+            (scrolldelay || 85)) /
+          1000;
       } else {
         animationSec =
-          ((wrapperWidth / (scrollamount || 6)) *
+          (((wrapperWidth - (hspace || 0) * 2) / (scrollamount || 6)) *
             (scrolldelay < 60 ? 60 : scrolldelay || 85)) /
           1000;
       }
