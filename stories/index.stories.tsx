@@ -18,6 +18,14 @@ storiesOf('marquee', module)
   .add('<Marquee behavior=slide>slideslideslideslide</Marquee>', () => (
     <Marquee behavior="slide">slideslideslideslide</Marquee>
   ))
+  .add(
+    '<Marquee behavior=alternate>alternatealternatealternatealternate</Marquee>',
+    () => (
+      <Marquee behavior="alternate" scrollamount={100}>
+        alternatealternatealternatealternate
+      </Marquee>
+    )
+  )
   .add('<Marquee bgcolor="red">red</Marquee>', () => (
     <Marquee bgcolor="red">red</Marquee>
   ))

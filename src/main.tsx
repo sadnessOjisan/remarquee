@@ -23,6 +23,7 @@ interface State {
   elementHeight: number | null;
   elementWidth: number | null;
   animationSec: number | null;
+  currentMode: string | null;
 }
 
 const Direction = {
@@ -42,7 +43,8 @@ class Remarquee extends React.Component<Props, State> {
       loopNum: -1,
       elementHeight: null,
       elementWidth: null,
-      animationSec: null
+      animationSec: null,
+      currentMode: null
     };
   }
 
@@ -53,19 +55,20 @@ class Remarquee extends React.Component<Props, State> {
       scrolldelay,
       truespeed,
       hspace,
-      vspace
+      vspace,
+      behavior
     } = this.props;
     this.text.current.addEventListener('webkitAnimationEnd', () => {
-      this.decrementLoopCount();
+      this.onAnimationEnd();
     });
     this.text.current.addEventListener('AnimationEnd', () => {
-      this.decrementLoopCount();
+      this.onAnimationEnd();
     });
     this.text.current.addEventListener('animationend', () => {
-      this.decrementLoopCount();
+      this.onAnimationEnd();
     });
     this.text.current.addEventListener('oAnimationEnd', () => {
-      this.decrementLoopCount();
+      this.onAnimationEnd();
     });
     const wrapperWidth = this.wrapper.current.clientWidth;
     const wrapperHeight = this.wrapper.current.clientHeight;
@@ -102,28 +105,59 @@ class Remarquee extends React.Component<Props, State> {
     this.setState({
       elementHeight: this.text.current.clientHeight,
       elementWidth: this.text.current.clientWidth,
-      animationSec: animationSec
+      animationSec: animationSec,
+      currentMode: direction || Direction.left
     });
   }
 
-  decrementLoopCount() {
-    const { loopNum } = this.state;
+  onAnimationEnd() {
+    const { behavior } = this.props;
+    const { loopNum, currentMode } = this.state;
+    if (behavior === 'alternate') {
+      let nextMode;
+      switch (currentMode) {
+        case Direction.left:
+          nextMode = Direction.right;
+          break;
+        case Direction.right:
+          nextMode = Direction.left;
+          break;
+        case Direction.up:
+          nextMode = Direction.down;
+          break;
+        case Direction.down:
+          nextMode = Direction.up;
+          break;
+        default:
+          break;
+      }
+      this.setState({
+        loopNum: this.state.loopNum + 1,
+        currentMode: nextMode
+      });
+    }
     if (loopNum > 0) {
-      this.setState({ loopNum: this.state.loopNum - 1 });
+      this.setState({
+        loopNum: this.state.loopNum - 1
+      });
     }
   }
 
   render() {
-    const { loopNum, animationSec, elementHeight, elementWidth } = this.state;
     const {
-      children,
-      direction,
-      hspace,
-      vspace,
-      className,
-      behavior
-    } = this.props;
-    const isLoop = behavior !== 'slide' && loopNum === -1;
+      loopNum,
+      animationSec,
+      elementHeight,
+      elementWidth,
+      currentMode
+    } = this.state;
+    console.log('<render>currentMode: ', currentMode);
+    const { children, hspace, vspace, className, behavior } = this.props;
+    console.log('<render>behavior: ', behavior);
+
+    const isLoop =
+      !(behavior === 'slide' || behavior === 'alternate') && loopNum === -1;
+    console.log('<render>isLoop: ', isLoop);
     return (
       <Wrapper {...this.props} ref={this.wrapper} className={className}>
         <LeftBlock
@@ -136,7 +170,7 @@ class Remarquee extends React.Component<Props, State> {
           ref={this.text}
           isLoop={isLoop}
           loopNum={loopNum}
-          direction={direction}
+          direction={currentMode}
           animationSec={animationSec}
           hspace={hspace || 0}
           vspace={vspace || 0}
@@ -228,18 +262,22 @@ const Text = styled.p`
         case Direction.left:
           return Left(props);
         case Direction.right:
-          return Right;
+          return Right(props);
         case Direction.up:
-          return Up;
+          return Up(props);
         case Direction.down:
-          return Down;
+          return Down(props);
         default:
           return Left(props);
       }
     }}
     ${props => props.animationSec}s linear;
   animation-iteration-count: ${props =>
-    props.isLoop ? 'infinite' : props.behavior === 'slide' ? 1 : props.loopNum};
+    props.isLoop
+      ? 'infinite'
+      : props.behavior === 'slide' || props.behavior === 'alternate'
+        ? 1
+        : props.loopNum};
   white-space: nowrap;
   display: inline-block;
 `;
