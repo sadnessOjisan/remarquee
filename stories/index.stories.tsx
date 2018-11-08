@@ -150,4 +150,32 @@ storiesOf('marquee', module)
         </Marquee>
       </Marquee>
     </Marquee>
+  ))
+  .add('marquee in marquee in marquee alternate', () => (
+    <Marquee direction="up" height="400px" behavior="alternate">
+      <Marquee direction="left" width="800px" behavior="alternate">
+        <Marquee direction="right" width="300px">
+          marquee in marquee in marquee
+        </Marquee>
+      </Marquee>
+    </Marquee>
+  ))
+  .add('marquee in marquee in marquee alternate speedy', () => (
+    <Marquee
+      direction="up"
+      height="400px"
+      behavior="alternate"
+      scrollamount={30}
+    >
+      <Marquee
+        direction="left"
+        width="800px"
+        behavior="alternate"
+        scrollamount={100}
+      >
+        <Marquee direction="right" width="300px" scrollamount={100}>
+          marquee in marquee in marquee speedyyyyyy
+        </Marquee>
+      </Marquee>
+    </Marquee>
   ));
