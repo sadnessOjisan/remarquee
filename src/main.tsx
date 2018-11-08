@@ -12,14 +12,18 @@ interface Props {
   loop?: number;
   scrollamount?: number;
   scrolldelay?: number;
-  truespeed?: number;
+  truespeed?: string;
   vspace?: number;
-  children?: React.ReactNode;
+  children?: string | React.ReactNode;
   className?: string;
 }
 
 interface State {
   loopNum: number;
+  elementHeight: number | null;
+  elementWidth: number | null;
+  animationSec: number | null;
+  currentMode: string | null;
 }
 
 const Direction = {
@@ -31,96 +35,271 @@ const Direction = {
 
 class Remarquee extends React.Component<Props, State> {
   private text = React.createRef<HTMLParagraphElement>();
+  private wrapper = React.createRef<HTMLParagraphElement>();
+
   constructor(props: Props) {
     super(props);
     this.state = {
-      loopNum: -1
+      loopNum: -1,
+      elementHeight: null,
+      elementWidth: null,
+      animationSec: null,
+      currentMode: null
     };
   }
 
   componentDidMount() {
+    const {
+      direction,
+      scrollamount,
+      scrolldelay,
+      truespeed,
+      hspace,
+      vspace,
+      behavior
+    } = this.props;
     this.text.current.addEventListener('webkitAnimationEnd', () => {
-      this.decrementLoopCount();
+      this.onAnimationEnd();
     });
     this.text.current.addEventListener('AnimationEnd', () => {
-      this.decrementLoopCount();
+      this.onAnimationEnd();
     });
     this.text.current.addEventListener('animationend', () => {
-      this.decrementLoopCount();
+      this.onAnimationEnd();
     });
     this.text.current.addEventListener('oAnimationEnd', () => {
-      this.decrementLoopCount();
+      this.onAnimationEnd();
+    });
+    const wrapperWidth = this.wrapper.current.clientWidth;
+    const wrapperHeight = this.wrapper.current.clientHeight;
+    let animationSec: number;
+    if (direction === Direction.up || direction === Direction.down) {
+      if (truespeed === 'true') {
+        animationSec =
+          (((wrapperHeight - (vspace || 0) * 2) / (scrollamount || 6)) *
+            (scrolldelay || 85)) /
+          1000;
+      } else {
+        animationSec =
+          (((wrapperHeight - (vspace || 0) * 2) / (scrollamount || 6)) *
+            (scrolldelay < 60 ? 60 : scrolldelay || 85)) /
+          1000;
+      }
+    } else if (
+      !direction ||
+      direction === Direction.left ||
+      direction === Direction.right
+    ) {
+      if (truespeed === 'true') {
+        animationSec =
+          (((wrapperWidth - (hspace || 0) * 2) / (scrollamount || 6)) *
+            (scrolldelay || 85)) /
+          1000;
+      } else {
+        animationSec =
+          (((wrapperWidth - (hspace || 0) * 2) / (scrollamount || 6)) *
+            (scrolldelay < 60 ? 60 : scrolldelay || 85)) /
+          1000;
+      }
+    }
+    console.log('<componentDidMount> animationSec: ', animationSec);
+    console.log('<componentDidMount> direction: ', direction);
+    this.setState({
+      elementHeight: this.text.current.clientHeight,
+      elementWidth: this.text.current.clientWidth,
+      animationSec: animationSec,
+      currentMode: direction || Direction.left
     });
   }
 
-  decrementLoopCount() {
-    const { loopNum } = this.state;
-    console.log('<decrementLoopCount> loopNum: ', loopNum);
+  onAnimationEnd() {
+    const { behavior } = this.props;
+    const { loopNum, currentMode } = this.state;
+    if (behavior === 'alternate') {
+      let nextMode;
+      switch (currentMode) {
+        case Direction.left:
+          nextMode = Direction.right;
+          break;
+        case Direction.right:
+          nextMode = Direction.left;
+          break;
+        case Direction.up:
+          nextMode = Direction.down;
+          break;
+        case Direction.down:
+          nextMode = Direction.up;
+          break;
+        default:
+          break;
+      }
+      this.setState({
+        loopNum: this.state.loopNum + 1,
+        currentMode: nextMode
+      });
+    }
     if (loopNum > 0) {
-      this.setState({ loopNum: this.state.loopNum - 1 });
+      this.setState({
+        loopNum: this.state.loopNum - 1
+      });
     }
   }
 
   render() {
-    const { loopNum } = this.state;
-    console.log('loopNum: ', loopNum);
-    const isLoop = loopNum === -1;
-    const { children } = this.props;
+    const {
+      loopNum,
+      animationSec,
+      elementHeight,
+      elementWidth,
+      currentMode
+    } = this.state;
+    console.log('<render>currentMode: ', currentMode);
+    const { children, hspace, vspace, className, behavior } = this.props;
+    console.log('<render>behavior: ', behavior);
+    const isLoop =
+      !(behavior === 'slide' || behavior === 'alternate') && loopNum === -1;
     return (
-      <Wrapper {...this.props}>
-        <Text ref={this.text} isLoop={isLoop} loopNum={loopNum} {...this.props}>
+      <Wrapper {...this.props} ref={this.wrapper} className={className}>
+        <LeftBlock
+          vspace={vspace}
+          hspace={hspace}
+          elementWidth={elementWidth}
+          elementHeight={elementHeight}
+        />
+        <Text
+          ref={this.text}
+          isLoop={isLoop}
+          loopNum={loopNum}
+          direction={currentMode}
+          animationSec={animationSec}
+          hspace={hspace || 0}
+          vspace={vspace || 0}
+          elementWidth={elementWidth}
+          elementHeight={elementHeight}
+          behavior={behavior}
+        >
           {children}
         </Text>
+        <RightBlock
+          vspace={vspace}
+          hspace={hspace}
+          elementWidth={elementWidth}
+          elementHeight={elementHeight}
+        />
       </Wrapper>
     );
   }
 }
 
-const Left = keyframes`
-  0% { left: 100%; transform: translate(0); }
-  100% { left: 0; transform: translate(-100%); }
+const Left = props => keyframes`
+  0% { left: ${
+    props.behavior === 'slide' || props.behavior === 'alternate'
+      ? `calc(100% - ${props.elementWidth}px)`
+      : `calc(100% - ${props.hspace}px)`
+  }; transform: translate(0); }
+  100% { left: ${
+    props.behavior === 'slide' || props.behavior === 'alternate'
+      ? props.elementWidth
+      : -(props.elementWidth - props.hspace)
+  }px; transform: translate(-100%); }
 `;
 
-const Right = keyframes`
-  0% { left: 0; transform: translate(-100%); }
-  100% { left: 100%; transform: translate(0); }
+const Right = props => keyframes`
+  0% { left: ${
+    props.behavior === 'slide' || props.behavior === 'alternate'
+      ? props.elementWidth
+      : `${props.hspace}`
+  }px; transform: translate(-100%); }
+  100% { left: ${
+    props.behavior === 'slide' || props.behavior === 'alternate'
+      ? `calc(100% - ${props.elementWidth}`
+      : `calc(100% - ${props.hspace}`
+  }px); transform: translate(0); }
 `;
 
-const Up = keyframes`
-  0% { bottom: 100%; transform: translate(0,100%); }
-  100% { bottom: 0px; transform: translate(0,0); }
+const Up = props => keyframes`
+  0% { top: ${
+    props.behavior === 'slide' || props.behavior === 'alternate'
+      ? `calc(100% + ${-props.elementHeight}px - ${props.vspace || 0}px)`
+      : `calc(100% - ${props.vspace}px)`
+  }; transform: translate(0,0); }
+  100% { top: ${
+    props.behavior === 'slide' || props.behavior === 'alternate'
+      ? `${0 + props.elementHeight}px`
+      : `0px`
+  }; transform: translate(0,-100%); }
 `;
 
-const Down = keyframes`
-  0% { bottom: 0px; transform: translate(0,0); }
-  100% { bottom: 100%; transform: translate(0,100%); }
+const Down = props => keyframes`
+0% { top: ${
+  props.behavior === 'slide' || props.behavior === 'alternate'
+    ? props.elementHeight
+    : 0 - props.elementHeight
+}px; transform: translate(0,-100%); }
+100% { top: calc(100% - ${props.vspace ||
+  0 + props.elementHeight}px); transform: translate(0,0); }
 `;
 
 const Wrapper = styled.div`
   position: relative;
+  background-color: ${props => props.bgcolor};
   width: ${props => (props.width ? props.width : '100%')};
-  height: ${props => props.height && props.height};
+  height: ${props => (props.height ? props.height : '16px')};
+  overflow: hidden;
+  display: flex;
+  flex-direction: ${props =>
+    (props.direction === 'up' || props.direction === 'down') && 'column'};
+`;
+
+const LeftBlock = styled.div`
+  width: ${props =>
+    props.hspace ? `${props.hspace + props.elementWidth}px` : '0px'};
+  height: ${props =>
+    props.vspace ? `${props.vspace - props.elementHeight}px` : '0px'};
+  background-color: white;
+  position: absolute;
+  left: ${props => props.hspace - props.elementWidth}px;
+  top: calc(${props => props.vspace}px);
+  background-color: white;
+  z-index: 3;
+`;
+
+const RightBlock = styled.div`
+  width: ${props =>
+    props.hspace ? `${props.hspace + props.elementWidth}px` : '0px'};
+  height: ${props =>
+    props.vspace ? `${props.vspace + props.elementHeight}px` : '0px'};
+  position: absolute;
+  left: calc(100% - ${props => props.hspace}px);
+  top: calc(100% - ${props => props.vspace}px);
+  background-color: white;
+  z-index: 3;
 `;
 
 const Text = styled.p`
+  z-index: 1;
   position: absolute;
   animation: ${props => {
       switch (props.direction) {
         case Direction.left:
-          return Left;
+          return Left(props);
         case Direction.right:
-          return Right;
+          return Right(props);
         case Direction.up:
-          return Up;
+          return Up(props);
         case Direction.down:
-          return Down;
+          return Down(props);
         default:
-          return Left;
+          return Left(props);
       }
     }}
-    1s linear;
+    ${props => props.animationSec}s linear;
   animation-iteration-count: ${props =>
-    props.isLoop ? 'infinite' : props.loopNum};
+    props.isLoop
+      ? 'infinite'
+      : props.behavior === 'slide' || props.behavior === 'alternate'
+        ? 1
+        : props.loopNum};
   white-space: nowrap;
   display: inline-block;
 `;
